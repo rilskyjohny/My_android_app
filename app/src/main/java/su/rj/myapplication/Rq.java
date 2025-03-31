@@ -1,5 +1,7 @@
 package su.rj.myapplication;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class Rq {
@@ -35,7 +37,7 @@ public class Rq {
 
     public static class SubRq{
         private Rq parentRq;
-        private final int id;
+        private final Integer id;
         private final int tovarid;
         private int count;
 
@@ -70,6 +72,12 @@ public class Rq {
 
         public int getId() {
             return id;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "SubRQ id=" + id + ", tovarid = " +tovarid + ", count = " + count;
         }
     }
 }
