@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package su.rj.myapplication;
 
 import java.util.ArrayList;
 
@@ -34,13 +34,19 @@ public class Rq {
     }
 
     public static class SubRq{
-        private final Rq parentRq;
+        private Rq parentRq;
         private final int id;
         private final int tovarid;
         private int count;
 
         public SubRq(Rq parentRq, int id, int tovarid, int count) {
             this.parentRq = parentRq;
+            this.id = id;
+            this.tovarid = tovarid;
+            this.count = count;
+        }
+
+        public SubRq(int id, int tovarid, int count) {
             this.id = id;
             this.tovarid = tovarid;
             this.count = count;

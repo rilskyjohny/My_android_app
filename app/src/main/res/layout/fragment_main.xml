@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context=".MainFragment"
+    tools:context="su.rj.myapplication.MainFragment"
     xmlns:tools="http://schemas.android.com/tools">
 
 

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package su.rj.myapplication;
 
 import android.os.Bundle;
 import android.widget.Button;
