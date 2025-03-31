@@ -33,7 +33,7 @@ public class Rq {
         return id;
     }
 
-    public class SubRq{
+    public static class SubRq{
         private final Rq parentRq;
         private final int id;
         private final int tovarid;

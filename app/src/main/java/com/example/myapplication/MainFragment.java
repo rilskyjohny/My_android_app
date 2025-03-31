@@ -1,16 +1,26 @@
 package com.example.myapplication;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class MainFragment extends Fragment
 {
     SQLiteOpenHelper sqoh;
     ArrayList<Rq> rqs;
     protected final static String dbName = "cust";
+    private Rq.SubRq generateSubRq(Cursor cur){
+
+    }
     public MainFragment() {
         super(R.layout.fragment_main);
         try{
@@ -35,15 +45,9 @@ public class MainFragment extends Fragment
             SQLiteDatabase db = sqoh.getReadableDatabase();
             Cursor cur = db.rawQuery("SELECT * from zakazi",null);
             LinkedList<Rq.SubRq> subRqs = new LinkedList<>();
-            boolean end = false;
-            while(!end) {
-                int ci = cur.getColumnIndex("subid");
-                if (ci == -1) {
-                    throw new RuntimeException();
-                }
-                int subid = cur.getInt(ci);
-                cur.
-            }
+            do {
+                getColumnInt(cur, "subid");
+            } while (cur.moveToNext());
             cur.close();
             throw new Exception("Hi");
         } catch (Throwable t){
@@ -57,5 +61,13 @@ public class MainFragment extends Fragment
             fragmentTransition.addToBackStack(null);
             fragmentTransition.commit();
         }
+    }
+
+    private static int getColumnInt(Cursor cur, String columnName) {
+        int ci = cur.getColumnIndex(columnName);
+        if (ci == -1) {
+            throw new RuntimeException();
+        }
+        return cur.getInt(ci);
     }
 }
