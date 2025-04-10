@@ -3,26 +3,48 @@ package su.rj.myapplication;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class MainFragment extends Fragment
 {
     SQLiteOpenHelper sqoh;
     ArrayList<Rq> rqs;
+    ArrayList<Rq.SubRq> subRqs;
     protected final static String dbName = "cust";
-    private Rq.SubRq generateSubRq(Cursor cur){
-
+    private Rq.SubRq generateSubRq(@NonNull Cursor cur){
+        int subid = getColumnInt(cur, "subid");
+        for(Rq.SubRq subRq:subRqs){
+            if(subRq.getId()==subid){
+                throw new RuntimeException();
+            }
+        }
+        Rq rq = getRq(getColumnInt(cur,"id"), cur);
+        Rq.SubRq subRq = new Rq.SubRq(rq,
+                subid, 0, 0);
+        rq.getSubrqs().add(subRq);
+        return subRq;
+    }
+    private Rq getRq(int id,Cursor cur) {
+        for(Rq rq:rqs)
+            if (id == rq.getId()) return rq;
+        Rq rq = new Rq(getColumnString(cur,"creds"),
+                new ArrayList<>(),id);
+        rqs.add(rq);
+        return rq;
     }
     public MainFragment() {
         super(R.layout.fragment_main);
+        rqs = new ArrayList<>();
+        subRqs = new ArrayList<>();
         try{
             sqoh = new SQLiteOpenHelper(this.getContext(),dbName,null,0) {
                 @Override
@@ -44,10 +66,12 @@ public class MainFragment extends Fragment
             };
             SQLiteDatabase db = sqoh.getReadableDatabase();
             Cursor cur = db.rawQuery("SELECT * from zakazi",null);
-            LinkedList<Rq.SubRq> subRqs = new LinkedList<>();
             do {
-                getColumnInt(cur, "subid");
+                generateSubRq(cur);
             } while (cur.moveToNext());
+            for (Rq.SubRq subRq : subRqs) {
+                Log.d("Hi",subRq.toString());
+            }
             cur.close();
             throw new Exception("Hi");
         } catch (Throwable t){
@@ -69,5 +93,12 @@ public class MainFragment extends Fragment
             throw new RuntimeException();
         }
         return cur.getInt(ci);
+    }
+    private static String getColumnString(Cursor cur, String columnName) {
+        int ci = cur.getColumnIndex(columnName);
+        if (ci == -1) {
+            throw new RuntimeException();
+        }
+        return cur.getString(ci);
     }
 }
