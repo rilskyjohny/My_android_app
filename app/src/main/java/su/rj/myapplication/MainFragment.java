@@ -74,16 +74,8 @@ public class MainFragment extends Fragment
             }
             cur.close();
             throw new Exception("Hi");
-        } catch (Throwable t){
-            Toast.makeText(this.getContext(), "Some error occured.", Toast.LENGTH_SHORT).show();
-            ErrorFragment.exception_name = t.getClass().getName();
-            ErrorFragment.exception_stacktrace = Arrays.toString(t.getStackTrace());
-            FragmentManager fm = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransition = fm.beginTransaction();
-            fragmentTransition.setReorderingAllowed(true);
-            fragmentTransition.replace(R.id.fragmentContainerView,ErrorFragment.newInstance(null,null));
-            fragmentTransition.addToBackStack(null);
-            fragmentTransition.commit();
+        } catch (Exception t){
+            ErrorFragment.scareUser(t,getContext(),requireActivity().getSupportFragmentManager());
         }
     }
 

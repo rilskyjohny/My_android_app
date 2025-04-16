@@ -1,15 +1,21 @@
 package su.rj.myapplication;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,5 +78,16 @@ public class ErrorFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.sync(view);
+    }
+
+    public static void scareUser(Exception t, Context context, FragmentManager fm){
+        Toast.makeText(context, "Some error occured.", Toast.LENGTH_SHORT).show();
+        ErrorFragment.exception_name = t.getClass().getName();
+        ErrorFragment.exception_stacktrace = Arrays.toString(t.getStackTrace());
+        FragmentTransaction fragmentTransition = fm.beginTransaction();
+        fragmentTransition.setReorderingAllowed(true);
+        fragmentTransition.replace(R.id.fragmentContainerView,ErrorFragment.newInstance(null,null));
+        fragmentTransition.addToBackStack(null);
+        fragmentTransition.commit();
     }
 }
