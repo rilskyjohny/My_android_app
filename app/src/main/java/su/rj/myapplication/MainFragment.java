@@ -6,18 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainFragment extends Fragment
 {
@@ -25,6 +21,7 @@ public class MainFragment extends Fragment
     ArrayList<Rq> rqs;
     ArrayList<Rq.SubRq> subRqs;
     protected final static String dbName = "cust";
+
     private Rq.SubRq generateSubRq(@NonNull Cursor cur){
         int subid = getColumnInt(cur, "subid");
         for(Rq.SubRq subRq:subRqs){
