@@ -12,10 +12,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
+
+import su.rj.myapplication.databinding.FragmentErrorBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,8 +26,7 @@ import java.util.Arrays;
 public class ErrorFragment extends Fragment {
     static String exception_name;
     static String exception_stacktrace;
-
-    TextView excn,excst;
+    FragmentErrorBinding feb;
     public ErrorFragment() {
         // Required empty public constructor
     }
@@ -56,21 +56,19 @@ public class ErrorFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_error, container, false);
+        feb = FragmentErrorBinding.inflate(inflater, container, false);
+        return feb.getRoot();
     }
 
     public void sync(View view){
         view.setAlpha(0.5F);
-        excn=view.findViewById(R.id.textViewErrorName);
-        excst=view.findViewById(R.id.textViewErrorToStr);
         if(exception_name!=null){
-            excn.setText(exception_name);
+            feb.textViewErrorName.setText(exception_name);
         }
         if(exception_stacktrace!=null){
-            excn.setText(exception_stacktrace);
+            feb.textViewErrorToStr.setText(exception_stacktrace);
         }
     }
 

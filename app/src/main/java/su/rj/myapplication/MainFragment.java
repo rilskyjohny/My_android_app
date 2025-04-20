@@ -5,13 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import su.rj.myapplication.databinding.FragmentMainBinding;
 
 import java.util.ArrayList;
 
@@ -21,7 +24,7 @@ public class MainFragment extends Fragment
     ArrayList<Rq> rqs;
     ArrayList<Rq.SubRq> subRqs;
     protected final static String dbName = "cust";
-
+    FragmentMainBinding fmb;
     private Rq.SubRq generateSubRq(@NonNull Cursor cur){
         int subid = getColumnInt(cur, "subid");
         for(Rq.SubRq subRq:subRqs){
@@ -81,10 +84,17 @@ public class MainFragment extends Fragment
         }
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        fmb = FragmentMainBinding.inflate(inflater,container,false);
+        return fmb.getRoot();
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = fmb.recyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setAdapter(new MyAdapter(rqs));
     }
