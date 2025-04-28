@@ -94,7 +94,7 @@ public class MainFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = fmb.recyclerview;
+        RecyclerView recyclerView = fmb.fragmentMainRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setAdapter(new MyAdapter(rqs));
     }

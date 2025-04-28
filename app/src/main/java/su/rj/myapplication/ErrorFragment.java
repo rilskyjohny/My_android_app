@@ -65,10 +65,10 @@ public class ErrorFragment extends Fragment {
     public void sync(View view){
         view.setAlpha(0.5F);
         if(exception_name!=null){
-            feb.textViewErrorName.setText(exception_name);
+            feb.fragmentErrorTextViewErrorName.setText(exception_name);
         }
         if(exception_stacktrace!=null){
-            feb.textViewErrorToStr.setText(exception_stacktrace);
+            feb.fragmentErrorTextViewErrorToStr.setText(exception_stacktrace);
         }
     }
 
@@ -84,7 +84,7 @@ public class ErrorFragment extends Fragment {
         ErrorFragment.exception_stacktrace = Arrays.toString(t.getStackTrace());
         FragmentTransaction fragmentTransition = fm.beginTransaction();
         fragmentTransition.setReorderingAllowed(true);
-        fragmentTransition.replace(R.id.fragmentContainerView,ErrorFragment.newInstance(null,null));
+        fragmentTransition.replace(R.id.activity_main_fragmentContainerView,ErrorFragment.newInstance(null,null));
         fragmentTransition.addToBackStack(null);
         fragmentTransition.commit();
     }

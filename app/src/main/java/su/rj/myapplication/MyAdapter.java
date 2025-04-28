@@ -25,7 +25,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             super(view);
             // Define click listener for the ViewHolder's View
 
-            textView = view.findViewById(R.id.textView);
+            textView = view.findViewById(R.id.zakaz_textView);
         }
 
         public TextView getTextView() {
