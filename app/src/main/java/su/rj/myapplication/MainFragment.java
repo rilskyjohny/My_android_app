@@ -103,14 +103,14 @@ public class MainFragment extends Fragment
     }
 
     private static int getColumnInt(Cursor cur, String columnName) {
-        int ci = cur.getColumnIndex(columnName);
+        int ci = cur.getColumnIndexOrThrow(columnName);
         if (ci == -1) {
             throw new RuntimeException();
         }
         return cur.getInt(ci);
     }
     private static String getColumnString(Cursor cur, String columnName) {
-        int ci = cur.getColumnIndex(columnName);
+        int ci = cur.getColumnIndexOrThrow(columnName);
         if (ci == -1) {
             throw new RuntimeException();
         }
