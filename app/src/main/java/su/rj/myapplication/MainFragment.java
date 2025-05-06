@@ -1,5 +1,6 @@
 package su.rj.myapplication;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -46,12 +47,14 @@ public class MainFragment extends Fragment
         rqs.add(rq);
         return rq;
     }
-    public MainFragment() {
-        super(R.layout.fragment_main);
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
         rqs = new ArrayList<>();
         subRqs = new ArrayList<>();
         try{
-            sqoh = new SQLiteOpenHelper(this.getContext(),dbName,null,1) {
+            sqoh = new SQLiteOpenHelper(context,dbName,null,1) {
                 @Override
                 public void onCreate(SQLiteDatabase db) {
                     db.execSQL("CREATE TABLE IF NOT EXISTS "+
