@@ -51,7 +51,7 @@ public class MainFragment extends Fragment
         rqs = new ArrayList<>();
         subRqs = new ArrayList<>();
         try{
-            sqoh = new SQLiteOpenHelper(this.getContext(),dbName,null,0) {
+            sqoh = new SQLiteOpenHelper(this.getContext(),dbName,null,1) {
                 @Override
                 public void onCreate(SQLiteDatabase db) {
                     db.execSQL("CREATE TABLE IF NOT EXISTS "+
