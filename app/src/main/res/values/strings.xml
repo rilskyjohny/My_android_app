@@ -8,4 +8,5 @@
     <string name="fragment_error_textViewErrorToStr_text">I, the developer of this app, did not implemented printing stacktrace here.</string>
     <string name="fragment_main_button_add_text">Add</string>
     <string name="fragment_main_button_clear_text">Clear</string>
+    <string name="devel_notify_root">Developer mode warning</string>
 </resources>
