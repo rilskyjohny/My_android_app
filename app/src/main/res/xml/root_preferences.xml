@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="Misc">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="general_test_orders"
+            android:title="Generate test orders on some application updates. " />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Developer options(not working now)">
+        <SwitchPreference
+            app:enabled="@bool/devel_root"
+            android:defaultValue="@bool/devel_inMemoryDatabase"
+            android:key="indev_memory_storage"
+            android:title="Use in-memory storage. "/>
+    </PreferenceCategory>
+</PreferenceScreen>
