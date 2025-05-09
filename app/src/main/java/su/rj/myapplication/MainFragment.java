@@ -57,6 +57,8 @@ public class MainFragment extends Fragment
             rqs.add(new Rq("Test",new ArrayList<>(),0));
             subRqs.add(new Rq.SubRq(rqs.get(0),0,0,0));
             rqs.get(0).getSubrqs().add(subRqs.get(0));
+            MainActivity activity = (MainActivity)requireActivity();
+            activity.showNotification("Warning:using in-memory database. ",2);
         } else {
             try{
                 sqoh = new SQLiteOpenHelper(context,dbName,null,1) {
