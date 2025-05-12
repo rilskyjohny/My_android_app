@@ -8,16 +8,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
-    private final String[] localDataSet;
-
+    MainFragment theMainFragment;
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
+    public MyAdapter(MainFragment f) {
+        theMainFragment = f;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
@@ -30,19 +30,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         public TextView getTextView() {
             return textView;
-        }
-    }
-
-    /**
-     * Initialize the dataset of the Adapter
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView
-     */
-    public MyAdapter(List<Rq> dataSet) {
-        localDataSet = new String[dataSet.size()];
-        for (int c = 0; c < dataSet.size(); c++) {
-            localDataSet[c]=dataSet.get(c).getCreds();
         }
     }
 
@@ -63,12 +50,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet[position]);
+        Rq curRq = theMainFragment.rqs.get(position);
+        viewHolder.getTextView().setText(curRq.toString());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return theMainFragment.rqs.size();
     }
 }

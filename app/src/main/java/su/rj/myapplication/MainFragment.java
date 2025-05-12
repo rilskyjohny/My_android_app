@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import su.rj.myapplication.databinding.FragmentMainBinding;
 
 import java.util.ArrayList;
@@ -121,10 +120,12 @@ public class MainFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fmb.fragmentMainRecyclerview.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        fmb.fragmentMainRecyclerview.setAdapter(new MyAdapter(rqs));
+        fmb.fragmentMainRecyclerview.setAdapter(new MyAdapter(this));
         fmb.fragmentMainButtonClear.setOnClickListener(v -> {
+            Log.e("TEST","Clear");
             MainFragment.this.rqs=new ArrayList<>();
             MainFragment.this.subRqs=new ArrayList<>();
+            MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter().notifyDataSetChanged();
         });
     }
 
