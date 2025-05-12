@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import su.rj.myapplication.databinding.FragmentMainBinding;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainFragment extends Fragment
 {
@@ -123,9 +124,10 @@ public class MainFragment extends Fragment
         fmb.fragmentMainRecyclerview.setAdapter(new MyAdapter(this));
         fmb.fragmentMainButtonClear.setOnClickListener(v -> {
             Log.e("TEST","Clear");
+            int len=MainFragment.this.rqs.size();
             MainFragment.this.rqs=new ArrayList<>();
             MainFragment.this.subRqs=new ArrayList<>();
-            MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter().notifyDataSetChanged();
+            Objects.requireNonNull(MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter()).notifyItemRangeRemoved(0,len);
         });
     }
 
