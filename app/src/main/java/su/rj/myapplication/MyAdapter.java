@@ -51,7 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Rq curRq = theMainFragment.rqs.get(position);
-        viewHolder.getTextView().setText(curRq.toString());
+        viewHolder.getTextView().setText("Order #"+curRq.getId()+"\n"+curRq.getCreds());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
