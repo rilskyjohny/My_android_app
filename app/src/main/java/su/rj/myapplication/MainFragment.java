@@ -120,9 +120,12 @@ public class MainFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = fmb.fragmentMainRecyclerview;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(new MyAdapter(rqs));
+        fmb.fragmentMainRecyclerview.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        fmb.fragmentMainRecyclerview.setAdapter(new MyAdapter(rqs));
+        fmb.fragmentMainButtonClear.setOnClickListener(v -> {
+            MainFragment.this.rqs=new ArrayList<>();
+            MainFragment.this.subRqs=new ArrayList<>();
+        });
     }
 
     private static int getColumnInt(Cursor cur, String columnName) {
