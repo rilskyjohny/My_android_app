@@ -5,14 +5,22 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Objects;
 
 import su.rj.myapplication.databinding.ActivityMainBinding;
 
@@ -20,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding amb;
     public final NotificationChannel channel;
     private static final String CHANNEL_ID = "Indev_notify";
+    private MainFragment mainFragment;
     public MainActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channel = new NotificationChannel(CHANNEL_ID,"Channel name", NotificationManager.IMPORTANCE_LOW);
@@ -44,6 +53,28 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        amb.activityMainBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment targetFragment;
+                if (mainFragment == null) mainFragment = new MainFragment();
+                targetFragment=mainFragment;
+                if (item.getItemId() == R.id.bottom_navigation_menu_page2_settings){
+                    if(amb.activityMainFragmentContainerView.getFragment().getClass()!=SettingsFragment.class){
+                        if(amb.activityMainFragmentContainerView.getFragment().getClass()==MainFragment.class) {
+                            mainFragment = amb.activityMainFragmentContainerView.getFragment();
+                        }
+                        targetFragment = new SettingsFragment();
+                    }
+                }
+                if(Objects.nonNull(targetFragment)) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.activity_main_fragmentContainerView, targetFragment);
+                    transaction.commit();
+                }
+                return true;
+            }
         });
     }
     public void showNotification(String text,int id) {

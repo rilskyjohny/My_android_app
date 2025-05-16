@@ -123,11 +123,16 @@ public class MainFragment extends Fragment
         fmb.fragmentMainRecyclerview.setLayoutManager(new LinearLayoutManager(this.getContext()));
         fmb.fragmentMainRecyclerview.setAdapter(new MyAdapter(this));
         fmb.fragmentMainButtonClear.setOnClickListener(v -> {
-            Log.e("TEST","Clear");
+            Log.i("MainFragment","Clear");
             int len=MainFragment.this.rqs.size();
             MainFragment.this.rqs=new ArrayList<>();
             MainFragment.this.subRqs=new ArrayList<>();
             Objects.requireNonNull(MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter()).notifyItemRangeRemoved(0,len);
+        });
+        fmb.fragmentMainButtonAdd.setOnClickListener(v -> {
+            Log.i("MainFragment","Add");
+            int len=MainFragment.this.rqs.size();
+            Objects.requireNonNull(MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter()).notifyItemInserted(len);
         });
     }
 
