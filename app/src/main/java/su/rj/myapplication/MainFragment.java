@@ -26,27 +26,6 @@ public class MainFragment extends Fragment
     ArrayList<Rq.SubRq> subRqs;
     protected final static String dbName = "cust";
     FragmentMainBinding fmb;
-    private Rq.SubRq generateSubRq(@NonNull Cursor cur){
-        int subid = getColumnInt(cur, "subid");
-        for(Rq.SubRq subRq:subRqs){
-            if(subRq.getId()==subid){
-                throw new RuntimeException();
-            }
-        }
-        Rq rq = getRq(getColumnInt(cur,"id"), cur);
-        Rq.SubRq subRq = new Rq.SubRq(rq,
-                subid, 0, 0);
-        rq.getSubrqs().add(subRq);
-        return subRq;
-    }
-    private Rq getRq(int id,Cursor cur) {
-        for(Rq rq:rqs)
-            if (id == rq.getId()) return rq;
-        Rq rq = new Rq(getColumnString(cur,"creds"),
-                new ArrayList<>(),id);
-        rqs.add(rq);
-        return rq;
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -97,7 +76,42 @@ public class MainFragment extends Fragment
                     }
                     s+="]";
                     Log.d("Load rqs",s);
-                    generateSubRq(cur);
+                    int ci1 = cur.getColumnIndexOrThrow("subid");
+                    if (ci1 == -1) {
+                        throw new RuntimeException();
+                    }
+                    int subid = cur.getInt(ci1);
+                    for(Rq.SubRq subRq:subRqs){
+                        if(subRq.getId()==subid){
+                            throw new RuntimeException();
+                        }
+                    }
+                    int ci = cur.getColumnIndexOrThrow("id");
+                    if (ci == -1) {
+                        throw new RuntimeException();
+                    }
+                    Rq rq = null;
+                    boolean finished = false;
+                    int id = cur.getInt(ci);
+                    for(Rq rq1 :rqs)
+                        if (id == rq1.getId()) {
+                            rq = rq1;
+                            finished = true;
+                            break;
+                        }
+                    if (!finished) {
+                        int ci2 = cur.getColumnIndexOrThrow("creds");
+                        if (ci2 == -1) {
+                            throw new RuntimeException();
+                        }
+                        Rq rq1 = new Rq(cur.getString(ci2),
+                                new ArrayList<>(),id);
+                        rqs.add(rq1);
+                        rq = rq1;
+                    }
+                    Rq.SubRq subRq = new Rq.SubRq(rq,
+                            subid, 0, 0);
+                    rq.getSubrqs().add(subRq);
                 } while (cur.moveToNext());
                 for (Rq.SubRq subRq : subRqs) {
                     Log.d("Load rqs","subRq:"+subRq.toString());
@@ -136,18 +150,4 @@ public class MainFragment extends Fragment
         });
     }
 
-    private static int getColumnInt(Cursor cur, String columnName) {
-        int ci = cur.getColumnIndexOrThrow(columnName);
-        if (ci == -1) {
-            throw new RuntimeException();
-        }
-        return cur.getInt(ci);
-    }
-    private static String getColumnString(Cursor cur, String columnName) {
-        int ci = cur.getColumnIndexOrThrow(columnName);
-        if (ci == -1) {
-            throw new RuntimeException();
-        }
-        return cur.getString(ci);
-    }
 }
