@@ -79,5 +79,9 @@ public class Rq {
         public String toString() {
             return "SubRQ id=" + id + ", tovarid = " +tovarid + ", count = " + count;
         }
+
+        public void setParentRq(Rq parentRq) {
+            this.parentRq = parentRq;
+        }
     }
 }
