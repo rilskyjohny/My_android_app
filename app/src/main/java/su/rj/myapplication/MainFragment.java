@@ -19,10 +19,8 @@ import java.util.Objects;
 
 public class MainFragment extends Fragment
 {
-    SQLiteOpenHelper sqoh;
     ArrayList<Rq> rqs;
     ArrayList<Rq.SubRq> subRqs;
-    protected final static String dbName = "cust";
     FragmentMainBinding fmb;
 
     @Override
@@ -32,7 +30,12 @@ public class MainFragment extends Fragment
         subRqs = new ArrayList<>();
         if(context.getResources().getBoolean(R.bool.devel_inMemoryDatabase)){
             rqs.add(new Rq("Test",new ArrayList<>(),0));
-            subRqs.add(new Rq.SubRq(rqs.get(0),0,0,0));
+            Rq.SubRq cur = new Rq.SubRq();
+            cur.parentRqId= rqs.get(0).getId();
+            cur.tovarid=0;
+            cur.count=0;
+            cur.id=0;
+            subRqs.add(new Rq.SubRq());
             rqs.get(0).getSubrqs().add(subRqs.get(0));
             MainActivity activity = (MainActivity)requireActivity();
             activity.showNotification("Warning:using in-memory database. ",2);
@@ -62,9 +65,6 @@ public class MainFragment extends Fragment
             int len=MainFragment.this.rqs.size();
             MainFragment.this.rqs=new ArrayList<>();
             MainFragment.this.subRqs=new ArrayList<>();
-            if(!requireContext().getResources().getBoolean(R.bool.devel_inMemoryDatabase)) {
-                MainFragment.this.sqoh.getWritableDatabase().execSQL("DELETE FROM zakazi ");
-            }
             Objects.requireNonNull(MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter()).notifyItemRangeRemoved(0,len);
         });
         fmb.fragmentMainButtonAdd.setOnClickListener(v -> {

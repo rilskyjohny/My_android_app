@@ -1,8 +1,10 @@
 package su.rj.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.room.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Rq {
     private String creds;
@@ -35,53 +37,63 @@ public class Rq {
         return id;
     }
 
+    @Entity
     public static class SubRq{
-        private Rq parentRq;
-        private final Integer id;
-        private final int tovarid;
-        private int count;
-
-        public SubRq(Rq parentRq, int id, int tovarid, int count) {
-            this.parentRq = parentRq;
-            this.id = id;
-            this.tovarid = tovarid;
-            this.count = count;
-        }
-
-        public SubRq(int id, int tovarid, int count) {
-            this.id = id;
-            this.tovarid = tovarid;
-            this.count = count;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public Rq getParentRq() {
-            return parentRq;
-        }
-
-        public int getTovarid() {
-            return tovarid;
-        }
-
-        public int getId() {
-            return id;
-        }
+        @ColumnInfo(name = "parent_rq_id")
+        public int parentRqId;
+        @PrimaryKey
+        public int id;
+        @ColumnInfo(name = "tovar_id")
+        public int tovarid;
+        @ColumnInfo(name = "count")
+        public int count;
+        @ColumnInfo(name = "creds")
+        public String creds;
 
         @NonNull
         @Override
         public String toString() {
-            return "SubRQ id=" + id + ", tovarid = " +tovarid + ", count = " + count;
+            return "SubRQ id = " + id + ", tovarid = " + tovarid + ", count = " + count + ", creds = " + creds;
         }
+    }
+    @Dao
+    public interface SubRqDAO{
+        @Query("SELECT * FROM SubRq")
+        List<SubRq> getAll();
+        @Delete
+        void delete(SubRq subRq);
+        @Insert
+        void insert(SubRq subRq);
+        @Query("DELETE FROM SubRq")
+        void deleteAll();
+    }
+    @Entity
+    public static class Tovar{
+        @ColumnInfo(name = "name")
+        public String name;
+        @PrimaryKey
+        public int id;
+        @ColumnInfo(name = "count")
+        public int count;
 
-        public void setParentRq(Rq parentRq) {
-            this.parentRq = parentRq;
+        @NonNull
+        @Override
+        public String toString() {
+            return "Tovar id = " + id + ", name = " + name + ", count = " + count;
         }
+    }
+    @Dao
+    public interface TovarDAO{
+        @Query("SELECT * FROM Tovar")
+        List<Tovar> getAll();
+        @Delete
+        void delete(Tovar tovar);
+        @Insert
+        void insert(Tovar tovar);
+    }
+    @Database(entities = {SubRq.class,Tovar.class}, version = 1)
+    public abstract static class AppDatabase extends RoomDatabase {
+        public abstract SubRqDAO subRqDAO();
+        public abstract TovarDAO tovarDAO();
     }
 }
