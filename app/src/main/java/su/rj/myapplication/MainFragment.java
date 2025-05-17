@@ -40,88 +40,69 @@ public class MainFragment extends Fragment
             activity.showNotification("Warning:using in-memory database. ",2);
         } else {
             try{
-                sqoh = new SQLiteOpenHelper(context,dbName,null,1) {
-                    @Override
-                    public void onCreate(SQLiteDatabase db) {
-                        Log.d("Database","onCreate");
-                        Log.d("Database","Create table zakazi. ");
-                        db.execSQL("CREATE TABLE IF NOT EXISTS "+
-                                "zakazi(subid INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                                "id INTEGER,tovarid INTEGER,count INTEGER,creds TEXT)");
-                        Log.d("Database","Create table tovari. ");
-                        db.execSQL("CREATE TABLE IF NOT EXISTS tovari(tovarid INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                                "name TEXT)");
-                        db.execSQL("INSERT INTO tovari VALUES(?,?)", new Object[]{1, "Test"});
-                        Log.d("Database","Inaert test values into table tovari. ");
-                        db.execSQL("INSERT INTO zakazi VALUES(?,?,?,?,?)", new Object[]{1,1,1,1,"Test"});
-                        Log.d("Database","Inaert test values into table zakazi. ");
-                    }
-                    @Override
-                    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                        Log.d("Database","onUpgrade from "+oldVersion+" to "+newVersion);
-                        Log.d("Database","Drop table zakazi. ");
-                        db.execSQL("DROP TABLE IF EXISTS zakazi");
-                        Log.d("Database","Drop table tovari. ");
-                        db.execSQL("DROP TABLE IF EXISTS tovari");
-                        this.onCreate(db);
-                    }
-                };
-                SQLiteDatabase db = sqoh.getReadableDatabase();
-                Cursor cur = db.rawQuery("SELECT * from zakazi",null);
-                do {
-                    String s = "Column names:[";
-                    for(String i:cur.getColumnNames()){
-                        s+=i;
-                        s+=", ";
-                    }
-                    s+="]";
-                    Log.d("Load rqs",s);
-                    int ci1 = cur.getColumnIndexOrThrow("subid");
-                    if (ci1 == -1) {
-                        throw new RuntimeException();
-                    }
-                    int subid = cur.getInt(ci1);
-                    for(Rq.SubRq subRq:subRqs){
-                        if(subRq.getId()==subid){
-                            throw new RuntimeException();
-                        }
-                    }
-                    int ci = cur.getColumnIndexOrThrow("id");
-                    if (ci == -1) {
-                        throw new RuntimeException();
-                    }
-                    Rq rq = null;
-                    boolean finished = false;
-                    int id = cur.getInt(ci);
-                    for(Rq rq1 :rqs)
-                        if (id == rq1.getId()) {
-                            rq = rq1;
-                            finished = true;
-                            break;
-                        }
-                    if (!finished) {
-                        int ci2 = cur.getColumnIndexOrThrow("creds");
-                        if (ci2 == -1) {
-                            throw new RuntimeException();
-                        }
-                        Rq rq1 = new Rq(cur.getString(ci2),
-                                new ArrayList<>(),id);
-                        rqs.add(rq1);
-                        rq = rq1;
-                    }
-                    Rq.SubRq subRq = new Rq.SubRq(rq,
-                            subid, 0, 0);
-                    rq.getSubrqs().add(subRq);
-                } while (cur.moveToNext());
-                for (Rq.SubRq subRq : subRqs) {
-                    Log.d("Load rqs","subRq:"+subRq.toString());
-                }
-                cur.close();
+                loadFromSQLite(context);
             } catch (Exception t){
                 Log.e("Load rqs","Some error ocurred. ",t);
                 ErrorFragment.scareUser(t,getContext(),requireActivity().getSupportFragmentManager());
             }
         }
+    }
+
+    private void loadFromSQLite(Context context) throws NullPointerException {
+        sqoh = new SQLiteOpenHelper(context,dbName,null,1) {
+            @Override
+            public void onCreate(SQLiteDatabase db) {
+                Log.d("Database","onCreate");
+                Log.d("Database","Create table zakazi. ");
+                db.execSQL("CREATE TABLE IF NOT EXISTS "+
+                        "zakazi(subid INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                        "id INTEGER,tovarid INTEGER,count INTEGER,creds TEXT)");
+                Log.d("Database","Create table tovari. ");
+                db.execSQL("CREATE TABLE IF NOT EXISTS tovari(tovarid INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                        "name TEXT)");
+                db.execSQL("INSERT INTO tovari VALUES(?,?)", new Object[]{1, "Test"});
+                Log.d("Database","Inaert test values into table tovari. ");
+                db.execSQL("INSERT INTO zakazi VALUES(?,?,?,?,?)", new Object[]{1,1,1,1,"Test"});
+                Log.d("Database","Inaert test values into table zakazi. ");
+            }
+            @Override
+            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                Log.d("Database","onUpgrade from "+oldVersion+" to "+newVersion);
+                Log.d("Database","Drop table zakazi. ");
+                db.execSQL("DROP TABLE IF EXISTS zakazi");
+                Log.d("Database","Drop table tovari. ");
+                db.execSQL("DROP TABLE IF EXISTS tovari");
+                this.onCreate(db);
+            }
+        };
+        SQLiteDatabase db = sqoh.getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * from zakazi",null);
+        do {
+            String s = "Column names:[";
+            for(String i:cur.getColumnNames()){
+                s+=i;
+                s+=", ";
+            }
+            s+="]";
+            Log.d("Load rqs",s);
+            int id = cur.getInt(1);
+            @NonNull
+            Rq tRq = new Rq(cur.getString(4),new ArrayList<>(),id);
+            for(Rq curRq:rqs){
+                if(curRq.getId()==id){
+                    tRq=curRq;
+                    break;
+                }
+            }
+            Rq.SubRq curSubRq = new Rq.SubRq(tRq,cur.getInt(0),cur.getInt(2),cur.getInt(3));
+            tRq.getSubrqs().add(curSubRq);
+            subRqs.add(curSubRq);
+            rqs.add(tRq);
+        } while (cur.moveToNext());
+        for (Rq.SubRq subRq : subRqs) {
+            Log.d("Load rqs","subRq:"+subRq.toString());
+        }
+        cur.close();
     }
 
     @Nullable
