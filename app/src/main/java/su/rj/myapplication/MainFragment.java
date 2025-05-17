@@ -1,7 +1,6 @@
 package su.rj.myapplication;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,16 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.room.Room;
+
 import su.rj.myapplication.databinding.FragmentMainBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainFragment extends Fragment
 {
-    ArrayList<Rq> rqs;
-    ArrayList<Rq.SubRq> subRqs;
+    List<Rq> rqs;
+    List<Rq.SubRq> subRqs;
     FragmentMainBinding fmb;
+    static public Rq.AppDatabase db = null;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -41,6 +44,20 @@ public class MainFragment extends Fragment
             activity.showNotification("Warning:using in-memory database. ",2);
         } else {
             try{
+                if(db!=null) {
+                    db = Room.databaseBuilder(context.getApplicationContext(),
+                            Rq.AppDatabase.class, "cust").build();
+                }
+                Rq.SubRqDAO subRqDAO = db.subRqDAO();
+                subRqs = subRqDAO.getAll();
+                for(Rq.SubRq cur:subRqs){
+                    for(Rq curRq:rqs){
+                        if(cur.parentRqId==curRq.getId()){
+                            curRq.getSubrqs().add(cur);
+                            curRq.setCreds(cur.creds);
+                        }
+                    }
+                }
             } catch (Exception t){
                 Log.e("Load rqs","Some error ocurred. ",t);
                 ErrorFragment.scareUser(t,getContext(),requireActivity().getSupportFragmentManager());
@@ -63,8 +80,8 @@ public class MainFragment extends Fragment
         fmb.fragmentMainButtonClear.setOnClickListener(v -> {
             Log.i("MainFragment","Clear");
             int len=MainFragment.this.rqs.size();
-            MainFragment.this.rqs=new ArrayList<>();
-            MainFragment.this.subRqs=new ArrayList<>();
+            MainFragment.this.rqs.clear();
+            MainFragment.this.subRqs.clear();
             Objects.requireNonNull(MainFragment.this.fmb.fragmentMainRecyclerview.getAdapter()).notifyItemRangeRemoved(0,len);
         });
         fmb.fragmentMainButtonAdd.setOnClickListener(v -> {

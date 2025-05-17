@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding amb;
     public final NotificationChannel channel;
     private static final String CHANNEL_ID = "Indev_notify";
-    private MainFragment mainFragment;
     public MainActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channel = new NotificationChannel(CHANNEL_ID,"Channel name", NotificationManager.IMPORTANCE_LOW);
@@ -57,16 +56,11 @@ public class MainActivity extends AppCompatActivity {
         amb.activityMainBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment targetFragment;
-                if (mainFragment == null) mainFragment = new MainFragment();
-                targetFragment=mainFragment;
-                if (item.getItemId() == R.id.bottom_navigation_menu_page2_settings){
-                    if(amb.activityMainFragmentContainerView.getFragment().getClass()!=SettingsFragment.class){
-                        if(amb.activityMainFragmentContainerView.getFragment().getClass()==MainFragment.class) {
-                            mainFragment = amb.activityMainFragmentContainerView.getFragment();
-                        }
-                        targetFragment = new SettingsFragment();
-                    }
+                Fragment targetFragment = null;
+                if (item.getItemId() == R.id.bottom_navigation_menu_page2_settings) {
+                    targetFragment=new SettingsFragment();
+                } else if (item.getItemId() == R.id.bottom_navigation_menu_page1_orders){
+                    targetFragment=new MainFragment();
                 }
                 if(Objects.nonNull(targetFragment)) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
