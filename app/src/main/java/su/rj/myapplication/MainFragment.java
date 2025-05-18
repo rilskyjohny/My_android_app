@@ -43,25 +43,38 @@ public class MainFragment extends Fragment
             MainActivity activity = (MainActivity)requireActivity();
             activity.showNotification("Warning:using in-memory database. ",2);
         } else {
-            try{
-                if(db!=null) {
-                    db = Room.databaseBuilder(context.getApplicationContext(),
-                            Rq.AppDatabase.class, "cust").build();
-                }
-                Rq.SubRqDAO subRqDAO = db.subRqDAO();
-                subRqs = subRqDAO.getAll();
-                for(Rq.SubRq cur:subRqs){
-                    for(Rq curRq:rqs){
-                        if(cur.parentRqId==curRq.getId()){
-                            curRq.getSubrqs().add(cur);
-                            curRq.setCreds(cur.creds);
+            if(db==null) {
+                db = Room.databaseBuilder(context.getApplicationContext(),
+                        Rq.AppDatabase.class, "cust").build();
+            }
+            new Thread(){
+                public void run(){
+                    try{
+                        if(db==null) {
+                            db = Room.databaseBuilder(context.getApplicationContext(),
+                                    Rq.AppDatabase.class, "cust").build();
                         }
+                        Rq.SubRqDAO subRqDAO = db.subRqDAO();
+                        subRqs = subRqDAO.getAll();
+                        for(Rq.SubRq cur:subRqs){
+                            for(Rq curRq:rqs){
+                                if(cur.parentRqId==curRq.getId()){
+                                    curRq.getSubrqs().add(cur);
+                                    curRq.setCreds(cur.creds);
+                                }
+                            }
+                        }
+                    } catch (Exception t){
+                        Log.e("Load rqs","Some error ocurred. ",t);
+                        MainFragment.this.requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ErrorFragment.scareUser(t,getContext(),requireActivity().getSupportFragmentManager());
+                            }
+                        });
                     }
                 }
-            } catch (Exception t){
-                Log.e("Load rqs","Some error ocurred. ",t);
-                ErrorFragment.scareUser(t,getContext(),requireActivity().getSupportFragmentManager());
-            }
+            }.start();
         }
     }
 
